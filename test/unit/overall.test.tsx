@@ -16,7 +16,7 @@ const cart = new CartApi();
 const store = initStore(api, cart);
 
 
-describe('Тестирование хедера', () => {
+describe('Общие требования', () => {
     it('в шапке отображаются ссылки на страницы магазина, а также ссылка на корзину', () => {        
         const { getByTestId } = render(
             <BrowserRouter basename={basename}>
@@ -43,4 +43,17 @@ describe('Тестирование хедера', () => {
         const headerBrand = getByTestId("link-to-main-page")
         expect(headerBrand.getAttribute("href") == "/hw/store/").toBeTruthy()
     });
+
+    it("на ширине меньше 576px навигационное меню должно скрываться за гамбургер", () => {
+        const { getByTestId } = render(
+            <BrowserRouter basename={basename}>
+                <Provider store={store}>
+                    <Application />
+                </Provider>
+            </BrowserRouter>
+        )
+
+        const headerNavbar = getByTestId("navbar-nav")
+        expect(headerNavbar.parentElement?.classList.contains("navbar-collapse")).toBeTruthy()
+    })
 });
