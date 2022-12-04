@@ -1,14 +1,12 @@
 import React from 'react'
 import { describe, it, expect } from "@jest/globals" 
 import { render } from '@testing-library/react'
-import events from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 
 import { ExampleApi, CartApi } from '../../src/client/api';
 import { initStore } from '../../src/client/store';
 import { Application } from '../../src/client/Application'
-import { ApplicationState } from '../../src/client/store';
 
 const basename = '/hw/store';
 const api = new ExampleApi(basename);
@@ -55,5 +53,27 @@ describe('Общие требования', () => {
 
         const headerNavbar = getByTestId("navbar-nav")
         expect(headerNavbar.parentElement?.classList.contains("navbar-collapse")).toBeTruthy()
+    })
+
+    it("при выборе элемента из меню гамбургера, меню должно закрываться", () => {
+        const { getByTestId } = render(
+            <BrowserRouter basename={basename}>
+                <Provider store={store}>
+                    <Application />
+                </Provider>
+            </BrowserRouter>
+        )
+        const burger = getByTestId("burger-button");
+        const navbar = getByTestId("navbar-nav");
+        const navbarWrapper = navbar.parentElement;
+        const navItem = navbar.querySelector(".nav-link") as HTMLElement;
+
+        expect(navbarWrapper?.classList).toContain("collapse");
+        burger.click()
+        expect(navbarWrapper?.classList).not.toContain("collapse");
+        if (navItem) {
+            navItem.click()
+            expect(navbarWrapper?.classList).toContain("collapse");
+        }
     })
 });
